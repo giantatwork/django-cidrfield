@@ -25,6 +25,7 @@ class IPNetworkField(models.Field):
             raise ValidationError(error)
 
     def from_db_value(self, value, expression, connection):
+        value = value.strip()
         if value is None or len(value) < 5:
             return None
         prefix = value[:4]
@@ -55,7 +56,7 @@ class IPNetworkField(models.Field):
         bin_ip = str(bin(int(value.network_address)))[2:]
         bin_ip = '0' * (max_length - len(bin_ip)) + bin_ip
         bin_network = prefix + bin_ip[:value.prefixlen] + '%'
-        return bin_network
+        return bin_network.strip()
 
     def get_prep_value(self, value):
         if isinstance(value, list):
